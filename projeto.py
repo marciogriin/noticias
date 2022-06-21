@@ -21,7 +21,7 @@ def	inserir_categoria():	#2
 	db_connection = mysql.connector.connect(host="localhost", user="root", passwd="", database="jornal")
 	cursor = db_connection.cursor()
 
-	nome = input("inserir nome:")
+	nome = input("Insira o nome da categoria: ")
 
 	sql = "INSERT INTO categorias (nome) VALUES (%s)"
 	values = (nome,)
@@ -31,19 +31,67 @@ def	inserir_categoria():	#2
 	db_connection.commit()
 	db_connection.close()
 
-def	alterar_categoria():	#3
-	print('\n Alterar categoria \n')
+def	atualizar_categoria():	#3
+	db_connection = mysql.connector.connect(host="localhost", user="root", passwd="", database="jornal")
+	cursor = db_connection.cursor()
+
+	nome = input("Insira o nome da nova categoria: ")
+	id = int(input("Insira o ID correspondente: "))
+
+	sql = ("update categorias set nome = %s where id= %s")
+	values = (nome, id)
+	cursor.execute(sql, values)
+
+	cursor.close()
+	db_connection.commit()
+	db_connection.close()
 	
 def apagar_categoria():		#4
-	print('\n Apagar categoria \n')
+	db_connection = mysql.connector.connect(host="localhost", user="root", passwd="", database="jornal")
+	cursor = db_connection.cursor()
+	
+	id = int(input("Insira o ID da categoria que deseja apagar: "))
+	
+	sql = ("delete from categorias where id = %s") 
+	values = (id,)
+	cursor.execute(sql, values)
+	
+	cursor.close()
+	db_connection.commit()
+	db_connection.close()
 
 def listar_noticia():		#5
-	print('\n Listar noticia \n')
+	db_connection = mysql.connector.connect(host="localhost", user="root", passwd="", database="jornal")
+	cursor = db_connection.cursor()
+
+	sql = ("SELECT noticias.id, noticias.nome, noticias.texto, noticias.id_categoria, categorias.nome FROM noticias join categorias on noticias.id_categoria = categorias.id;")
+	cursor.execute(sql)
+
+	print('{:^30}|{:^30}|{:^30}|{:^30}|{:^30}'.format('ID', 'Título', 'Notícia', 'ID Categoria', 'Nome da Categoria'))
+	for (id, noticia, texto, id_categoria, categoria) in cursor:
+	  print('{:^30}|{:^30}|{:^30}|{:^30}|{:^30}'.format(noticias.id, noticias.nome, noticias.texto, noticias.id_categoria, categorias.nome))
+	print("\n")
+
+	cursor.close()
+	db_connection.close()
 	
 def inserir_noticia():		#6
-	print('\n Inserir noticia \n')
+	db_connection = mysql.connector.connect(host="localhost", user="root", passwd="", database="jornal")
+	cursor = db_connection.cursor()
+
+	nome = input("Insira o Título da notícia: ")
+	texto = input("Insira a notícia: ")
+	id_categoria = int(input('Insira o ID da Categoria: '))
 	
-def alterar_noticia():		#7
+	sql = "INSERT INTO noticias (nome, texto, id_categoria) VALUES (%s, %s, %s)"
+	values = (nome, texto, id_categoria)
+	cursor.execute(sql, values)
+
+	cursor.close()
+	db_connection.commit()
+	db_connection.close()
+	
+def atualizar_noticia():		#7
 	print('\n Alterar noticia \n')
 	
 def apagar_noticia():		#8
@@ -52,11 +100,11 @@ def apagar_noticia():		#8
 while True:
 	print('''1 Listar categorias
 2 Inserir categoria
-3 Alterar categoria
+3 Atualizar categoria
 4 Apagar categoria
 5 Listar noticias
 6 Inserir noticia
-7 Alterar noticia
+7 Atualizar noticia
 8 Apagar noticia
 9 Sair''')
 	opcao = int(input('escolha uma opcao:'))
@@ -67,7 +115,7 @@ while True:
 		inserir_categoria()
 		
 	elif opcao == 3:
-		alterar_categoria()
+		atualizar_categoria()
 		
 	elif opcao == 4:
 		apagar_categoria()
@@ -79,7 +127,7 @@ while True:
 		inserir_noticia()
 
 	elif opcao == 7:
-		alterar_noticia()
+		atualizar_noticia()
 	
 	elif opcao == 8:
 		apagar_noticia()
